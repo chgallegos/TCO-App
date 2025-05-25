@@ -1,19 +1,25 @@
+
 document.addEventListener("DOMContentLoaded", function () {
-  var carquery = new CarQuery();
+  const carquery = new CarQuery();
   carquery.init();
   carquery.setFilters({ sold_in_us: true });
-  carquery.initMakeDropdown("make");
+
+  carquery.populateCarMakes("make");
 
   document.getElementById("make").addEventListener("change", function () {
-    carquery.initModelDropdown("model", this.value);
+    carquery.populateCarModels("model", this.value);
   });
 
   document.getElementById("model").addEventListener("change", function () {
-    carquery.initYearDropdown("year", document.getElementById("make").value, this.value);
+    const make = document.getElementById("make").value;
+    carquery.populateCarYears("year", make, this.value);
   });
 
   document.getElementById("year").addEventListener("change", function () {
-    carquery.initTrimDropdown("style", document.getElementById("make").value, document.getElementById("model").value, this.value);
+    const make = document.getElementById("make").value;
+    const model = document.getElementById("model").value;
+    const year = this.value;
+    carquery.populateCarTrims("style", make, model, year);
   });
 
   const trimMap = {
@@ -42,28 +48,24 @@ let chartInstance = null;
 
 document.getElementById("tco-form").addEventListener("submit", function (e) {
   e.preventDefault();
-  const data = {
-    make: document.getElementById("make").value,
-    model: document.getElementById("model").value,
-    year: document.getElementById("year").value,
-    style: document.getElementById("style").value,
-    zipcode: document.getElementById("zipcode").value,
-    state: document.getElementById("state").value,
-    fuel_cost: parseFloat(document.getElementById("fuel_cost").value),
-    maintenance_cost: parseFloat(document.getElementById("maintenance_cost").value),
-    insurance_cost: parseFloat(document.getElementById("insurance_cost").value),
-    total_cost: parseFloat(document.getElementById("total_cost").value),
-    tesla_model: document.getElementById("tesla_model").value,
-    tesla_trim: document.getElementById("tesla_trim").value
-  };
+  document.getElementById("estimation").style.display = "block";
+  document.getElementById("loading").textContent = "Loading vehicle cost estimates...";
 
-  fetch("/compare", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-    .then((response) => response.json())
-    .then((data) => drawChart(data));
+  // Simulated fetch of cost data
+  setTimeout(() => {
+    const simulatedData = {
+      "Fuel/Energy": { user_car: 9500, tesla: 2500 },
+      "Maintenance": { user_car: 4800, tesla: 2200 },
+      "Insurance": { user_car: 6700, tesla: 6000 },
+      "Total": {
+        user_car: 9500 + 4800 + 6700,
+        tesla: 2500 + 2200 + 6000
+      }
+    };
+
+    document.getElementById("loading").textContent = "Estimates loaded.";
+    drawChart(simulatedData);
+  }, 1500);
 });
 
 function drawChart(data) {

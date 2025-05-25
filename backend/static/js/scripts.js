@@ -1,25 +1,71 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-  const carquery = new CarQuery();
-  carquery.init();
-  carquery.setFilters({ sold_in_us: true });
+  const vehicleData = {
+    Porsche: {
+      "Cayenne": {
+        "2017": ["Base", "S", "Turbo"]
+      }
+    },
+    BMW: {
+      "3 Series": {
+        "2018": ["320i", "330i", "340i"]
+      }
+    },
+    Honda: {
+      "Accord": {
+        "2020": ["LX", "EX", "Sport"]
+      }
+    }
+  };
 
-  carquery.populateCarMakes("make");
+  const makeSelect = document.getElementById("make");
+  const modelSelect = document.getElementById("model");
+  const yearSelect = document.getElementById("year");
+  const styleSelect = document.getElementById("style");
 
-  document.getElementById("make").addEventListener("change", function () {
-    carquery.populateCarModels("model", this.value);
+  // Populate makes
+  Object.keys(vehicleData).forEach(make => {
+    const opt = document.createElement("option");
+    opt.value = make;
+    opt.text = make;
+    makeSelect.appendChild(opt);
   });
 
-  document.getElementById("model").addEventListener("change", function () {
-    const make = document.getElementById("make").value;
-    carquery.populateCarYears("year", make, this.value);
+  makeSelect.addEventListener("change", function () {
+    modelSelect.innerHTML = "";
+    yearSelect.innerHTML = "";
+    styleSelect.innerHTML = "";
+    const models = Object.keys(vehicleData[this.value]);
+    models.forEach(model => {
+      const opt = document.createElement("option");
+      opt.value = model;
+      opt.text = model;
+      modelSelect.appendChild(opt);
+    });
   });
 
-  document.getElementById("year").addEventListener("change", function () {
-    const make = document.getElementById("make").value;
-    const model = document.getElementById("model").value;
-    const year = this.value;
-    carquery.populateCarTrims("style", make, model, year);
+  modelSelect.addEventListener("change", function () {
+    yearSelect.innerHTML = "";
+    styleSelect.innerHTML = "";
+    const selectedMake = makeSelect.value;
+    const years = Object.keys(vehicleData[selectedMake][this.value]);
+    years.forEach(year => {
+      const opt = document.createElement("option");
+      opt.value = year;
+      opt.text = year;
+      yearSelect.appendChild(opt);
+    });
+  });
+
+  yearSelect.addEventListener("change", function () {
+    styleSelect.innerHTML = "";
+    const styles = vehicleData[makeSelect.value][modelSelect.value][this.value];
+    styles.forEach(style => {
+      const opt = document.createElement("option");
+      opt.value = style;
+      opt.text = style;
+      styleSelect.appendChild(opt);
+    });
   });
 
   const trimMap = {
@@ -51,21 +97,18 @@ document.getElementById("tco-form").addEventListener("submit", function (e) {
   document.getElementById("estimation").style.display = "block";
   document.getElementById("loading").textContent = "Loading vehicle cost estimates...";
 
-  // Simulated fetch of cost data
-  setTimeout(() => {
-    const simulatedData = {
-      "Fuel/Energy": { user_car: 9500, tesla: 2500 },
-      "Maintenance": { user_car: 4800, tesla: 2200 },
-      "Insurance": { user_car: 6700, tesla: 6000 },
-      "Total": {
-        user_car: 9500 + 4800 + 6700,
-        tesla: 2500 + 2200 + 6000
-      }
-    };
+  const make = document.getElementById("make").value;
+  const model = document.getElementById("model").value;
+  const year = document.getElementById("year").value;
+  const key = make + " " + model + " " + year;
 
-    document.getElementById("loading").textContent = "Estimates loaded.";
-    drawChart(simulatedData);
-  }, 1500);
+  fetch("/compare", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ make, model, year })
+  })
+    .then((response) => response.json())
+    .then((data) => drawChart(data));
 });
 
 function drawChart(data) {

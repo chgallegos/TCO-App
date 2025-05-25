@@ -4,16 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tesla TCO Comparison</title>
-  <link rel="stylesheet" href="/static/css/styles.css" id="theme-stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.modern.css" id="theme-stylesheet">
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" alt="Tesla Logo" class="logo" />
-      <h1>COST OF OWNERSHIP COMPARISON</h1>
-      <p class="subtitle">Compare the 5-Year Cost of Ownership Between Your Car and a Tesla</p>
-      <button class="toggle-theme" onclick="toggleTheme()">Toggle Dark Mode</button>
-    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" alt="Tesla Logo" class="logo" />
+    <h1>COST OF OWNERSHIP COMPARISON</h1>
+    <p class="subtitle">Compare the 5-Year Cost of Ownership Between Your Car and a Tesla</p>
+    <button class="toggle-theme" onclick="toggleTheme()">Toggle Dark Mode</button>
 
     <div class="section">
       <h2>Your Vehicle</h2>
@@ -85,6 +83,7 @@
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://www.carqueryapi.com/js/carquery.0.3.4.js"></script>
@@ -93,9 +92,9 @@
     function toggleTheme() {
       const link = document.getElementById('theme-stylesheet');
       if (link.getAttribute('href').includes('dark')) {
-        link.setAttribute('href', '/static/css/styles.css');
+        link.setAttribute('href', '/static/css/styles.modern.css');
       } else {
-        link.setAttribute('href', '/static/css/styles.dark.css');
+        link.setAttribute('href', '/static/css/styles.modern.dark.css');
       }
     }
   </script>

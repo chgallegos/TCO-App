@@ -1,4 +1,7 @@
 
+let mileageMultiplier = 1.2; // default to 12,000 mi/year
+let chartInstance = null;
+
 document.addEventListener("DOMContentLoaded", function () {
   const vehicleData = {
     "Porsche": {
@@ -50,10 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     yearSelect.innerHTML = "<option value=''>Select Year</option>";
     styleSelect.innerHTML = "<option value=''>Select Style</option>";
 
-    const models = vehicleData[this.value];
-    if (!models) return;
-
-    Object.keys(models).forEach(model => {
+    Object.keys(vehicleData[this.value]).forEach(model => {
       const opt = document.createElement("option");
       opt.value = model;
       opt.text = model;
@@ -66,10 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     styleSelect.innerHTML = "<option value=''>Select Style</option>";
 
     const selectedMake = makeSelect.value;
-    const years = vehicleData[selectedMake][this.value];
-    if (!years) return;
-
-    Object.keys(years).forEach(year => {
+    Object.keys(vehicleData[selectedMake][this.value]).forEach(year => {
       const opt = document.createElement("option");
       opt.value = year;
       opt.text = year;
@@ -83,8 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectedMake = makeSelect.value;
     const selectedModel = modelSelect.value;
     const styles = vehicleData[selectedMake][selectedModel][this.value];
-    if (!styles) return;
-
     styles.forEach(style => {
       const opt = document.createElement("option");
       opt.value = style;
@@ -110,9 +105,25 @@ document.addEventListener("DOMContentLoaded", function () {
       trimSelect.appendChild(opt);
     });
   });
-});
 
-let chartInstance = null;
+  document.querySelectorAll(".mileage-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".mileage-btn").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+      mileageMultiplier = parseFloat(this.getAttribute("data-multiplier"));
+    });
+  });
+
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    document.getElementById("tco-form").reset();
+    document.getElementById("comparisonChart").getContext("2d").clearRect(0, 0, 400, 400);
+    document.getElementById("estimation").style.display = "none";
+    document.getElementById("totals").innerHTML = "";
+    mileageMultiplier = 1.2;
+    document.querySelectorAll(".mileage-btn").forEach(b => b.classList.remove("active"));
+    document.querySelector('[data-multiplier="1.2"]').classList.add("active");
+  });
+});
 
 document.getElementById("tco-form").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -131,7 +142,15 @@ document.getElementById("tco-form").addEventListener("submit", function (e) {
     body: JSON.stringify({ make, model, year, style, state })
   })
     .then((response) => response.json())
-    .then((data) => drawChart(data));
+    .then((data) => {
+      data["Fuel/Energy"].user_car = Math.round(data["Fuel/Energy"].user_car * mileageMultiplier);
+      data["Fuel/Energy"].tesla = Math.round(data["Fuel/Energy"].tesla * mileageMultiplier);
+      data["Total"] = {
+        user_car: data["Fuel/Energy"].user_car + data["Maintenance"].user_car + data["Insurance"].user_car,
+        tesla: data["Fuel/Energy"].tesla + data["Maintenance"].tesla + data["Insurance"].tesla
+      };
+      drawChart(data);
+    });
 });
 
 function drawChart(data) {

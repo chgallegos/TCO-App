@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +66,17 @@
         </div>
 
         <button type="submit" class="submit-btn">COMPARE!</button>
+        <button type="button" id="reset-btn" class="submit-btn" style="background-color: #666; margin-top: 10px;">RESET</button>
       </form>
+    </div>
+
+    <div class="section">
+      <h2>Mileage Assumption</h2>
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+        <button type="button" class="submit-btn mileage-btn" data-multiplier="1.0">10,000 mi/year</button>
+        <button type="button" class="submit-btn mileage-btn active" data-multiplier="1.2">12,000 mi/year</button>
+        <button type="button" class="submit-btn mileage-btn" data-multiplier="1.5">15,000 mi/year</button>
+      </div>
     </div>
 
     <div id="estimation" class="section" style="display:none;">
@@ -76,6 +87,10 @@
     <div class="chart-section">
       <canvas id="comparisonChart"></canvas>
       <div id="totals"></div>
+    </div>
+
+    <div class="section" style="font-size: 0.95rem; color: #555; margin-top: 2rem;">
+      <p><strong>Explanation:</strong> These estimates represent the 5-year total cost of ownership based on average U.S. fuel or electricity costs, maintenance expenses, and insurance rates. Fuel and energy estimates are adjusted based on your selected state and estimated mileage. Tesla costs assume standard efficiency and typical usage scenarios.</p>
     </div>
   </div>
 

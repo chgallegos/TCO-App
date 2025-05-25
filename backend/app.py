@@ -6,7 +6,7 @@ import os
 app = Flask(__name__, template_folder="templates", static_folder="static")
 CORS(app)
 
-# Fuel/Electricity adjustment factors by state (simplified for demo)
+# State adjustment multipliers
 STATE_COSTS = {
     "UT": { "gas": 1.0, "electric": 1.0 },
     "CA": { "gas": 1.2, "electric": 1.6 },
@@ -15,19 +15,36 @@ STATE_COSTS = {
     "FL": { "gas": 1.05, "electric": 1.1 }
 }
 
-# Expanded demo vehicle data
-TCO_DATA = {
-    "Porsche Cayenne 2017 Base": { "maintenance": 6000, "insurance": 4500, "tesla": 8500 },
-    "BMW 3 Series 2018 330i": { "maintenance": 3800, "insurance": 4100, "tesla": 8100 },
-    "Honda Accord 2020 EX": { "maintenance": 3000, "insurance": 3900, "tesla": 7500 },
-    "Toyota Camry 2019 SE": { "maintenance": 2800, "insurance": 3600, "tesla": 7400 },
-    "Chevrolet Malibu 2020 LT": { "maintenance": 3200, "insurance": 3700, "tesla": 7300 },
-    "Ford F-150 2021 XLT": { "maintenance": 4000, "insurance": 4600, "tesla": 8200 }
-}
-
-# Base costs before adjustment (in USD)
+# Base fuel/electricity costs for 5 years
 BASE_FUEL_COST = 9000
 BASE_ELECTRIC_COST = 2500
+
+# Expanded hardcoded TCO data
+TCO_DATA = {
+    "Porsche Cayenne 2017 Base": { "maintenance": 6000, "insurance": 4500 },
+    "Porsche Cayenne 2017 S": { "maintenance": 6400, "insurance": 4600 },
+    "Porsche Cayenne 2017 Turbo": { "maintenance": 6800, "insurance": 4700 },
+
+    "BMW 3 Series 2018 320i": { "maintenance": 3600, "insurance": 4000 },
+    "BMW 3 Series 2018 330i": { "maintenance": 3800, "insurance": 4100 },
+    "BMW 3 Series 2018 340i": { "maintenance": 4000, "insurance": 4200 },
+
+    "Honda Accord 2020 LX": { "maintenance": 2800, "insurance": 3700 },
+    "Honda Accord 2020 EX": { "maintenance": 3000, "insurance": 3900 },
+    "Honda Accord 2020 Sport": { "maintenance": 3200, "insurance": 4000 },
+
+    "Toyota Camry 2019 LE": { "maintenance": 2600, "insurance": 3500 },
+    "Toyota Camry 2019 SE": { "maintenance": 2800, "insurance": 3600 },
+    "Toyota Camry 2019 XLE": { "maintenance": 3000, "insurance": 3700 },
+
+    "Chevrolet Malibu 2020 LS": { "maintenance": 3000, "insurance": 3600 },
+    "Chevrolet Malibu 2020 LT": { "maintenance": 3200, "insurance": 3700 },
+    "Chevrolet Malibu 2020 Premier": { "maintenance": 3400, "insurance": 3900 },
+
+    "Ford F-150 2021 XL": { "maintenance": 3700, "insurance": 4400 },
+    "Ford F-150 2021 XLT": { "maintenance": 4000, "insurance": 4600 },
+    "Ford F-150 2021 Lariat": { "maintenance": 4200, "insurance": 4800 }
+}
 
 @app.route("/")
 def index():
@@ -36,17 +53,21 @@ def index():
 @app.route("/compare", methods=["POST"])
 def compare():
     data = request.get_json()
-    key = f"{data['make']} {data['model']} {data['year']} {data['style']}"
+    make = data.get("make")
+    model = data.get("model")
+    year = data.get("year")
+    style = data.get("style")
     state = data.get("state", "UT")
 
-    state_fuel_factor = STATE_COSTS.get(state, STATE_COSTS["UT"])
+    key = f"{make} {model} {year} {style}"
+    state_factor = STATE_COSTS.get(state, STATE_COSTS["UT"])
 
     if key in TCO_DATA:
         car = TCO_DATA[key]
         result = {
             "Fuel/Energy": {
-                "user_car": round(BASE_FUEL_COST * state_fuel_factor["gas"]),
-                "tesla": round(BASE_ELECTRIC_COST * state_fuel_factor["electric"])
+                "user_car": round(BASE_FUEL_COST * state_factor["gas"]),
+                "tesla": round(BASE_ELECTRIC_COST * state_factor["electric"])
             },
             "Maintenance": {
                 "user_car": car["maintenance"],

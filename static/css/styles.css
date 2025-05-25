@@ -1,0 +1,10 @@
+body {
+  font-family: Arial;
+  margin: 20px;
+}
+form {
+  margin-bottom: 30px;
+}
+input, select {
+  margin: 5px;
+}

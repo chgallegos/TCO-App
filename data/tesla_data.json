@@ -1,0 +1,14 @@
+{
+  "Model 3": {
+    "fuel_cost": 2500,
+    "maintenance_cost": 1500,
+    "insurance_cost": 3000,
+    "total_cost": 11000
+  },
+  "Model Y": {
+    "fuel_cost": 2700,
+    "maintenance_cost": 1600,
+    "insurance_cost": 3100,
+    "total_cost": 11500
+  }
+}

@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
   const vehicleData = {
     Porsche: {
@@ -15,6 +14,21 @@ document.addEventListener("DOMContentLoaded", function () {
       "Accord": {
         "2020": ["LX", "EX", "Sport"]
       }
+    },
+    Toyota: {
+      "Camry": {
+        "2019": ["LE", "SE", "XLE"]
+      }
+    },
+    Chevrolet: {
+      "Malibu": {
+        "2020": ["LS", "LT", "Premier"]
+      }
+    },
+    Ford: {
+      "F-150": {
+        "2021": ["XL", "XLT", "Lariat"]
+      }
     }
   };
 
@@ -23,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const yearSelect = document.getElementById("year");
   const styleSelect = document.getElementById("style");
 
-  // Populate makes
   Object.keys(vehicleData).forEach(make => {
     const opt = document.createElement("option");
     opt.value = make;
@@ -35,8 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     modelSelect.innerHTML = "";
     yearSelect.innerHTML = "";
     styleSelect.innerHTML = "";
-    const models = Object.keys(vehicleData[this.value]);
-    models.forEach(model => {
+    Object.keys(vehicleData[this.value]).forEach(model => {
       const opt = document.createElement("option");
       opt.value = model;
       opt.text = model;
@@ -47,8 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
   modelSelect.addEventListener("change", function () {
     yearSelect.innerHTML = "";
     styleSelect.innerHTML = "";
-    const selectedMake = makeSelect.value;
-    const years = Object.keys(vehicleData[selectedMake][this.value]);
+    const years = Object.keys(vehicleData[makeSelect.value][this.value]);
     years.forEach(year => {
       const opt = document.createElement("option");
       opt.value = year;
@@ -76,17 +87,14 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   document.getElementById("tesla_model").addEventListener("change", function () {
-    const selected = this.value;
     const trimSelect = document.getElementById("tesla_trim");
     trimSelect.innerHTML = "";
-    if (trimMap[selected]) {
-      trimMap[selected].forEach(trim => {
-        const option = document.createElement("option");
-        option.value = trim;
-        option.text = trim;
-        trimSelect.appendChild(option);
-      });
-    }
+    (trimMap[this.value] || []).forEach(trim => {
+      const opt = document.createElement("option");
+      opt.value = trim;
+      opt.text = trim;
+      trimSelect.appendChild(opt);
+    });
   });
 });
 
@@ -100,12 +108,13 @@ document.getElementById("tco-form").addEventListener("submit", function (e) {
   const make = document.getElementById("make").value;
   const model = document.getElementById("model").value;
   const year = document.getElementById("year").value;
-  const key = make + " " + model + " " + year;
+  const style = document.getElementById("style").value;
+  const state = document.getElementById("state").value;
 
   fetch("/compare", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ make, model, year })
+    body: JSON.stringify({ make, model, year, style, state })
   })
     .then((response) => response.json())
     .then((data) => drawChart(data));
@@ -124,32 +133,17 @@ function drawChart(data) {
     data: {
       labels: labels,
       datasets: [
-        {
-          label: "Other Car",
-          data: userCarData,
-          backgroundColor: "#333"
-        },
-        {
-          label: "Tesla",
-          data: teslaData,
-          backgroundColor: "#e82127"
-        }
+        { label: "Other Car", data: userCarData, backgroundColor: "#333" },
+        { label: "Tesla", data: teslaData, backgroundColor: "#e82127" }
       ]
     },
     options: {
       responsive: true,
       plugins: {
         legend: { position: "top" },
-        title: {
-          display: true,
-          text: "Other Car vs Tesla"
-        }
+        title: { display: true, text: "Other Car vs Tesla" }
       },
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
+      scales: { y: { beginAtZero: true } }
     }
   });
 

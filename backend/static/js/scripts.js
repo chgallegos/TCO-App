@@ -1,31 +1,32 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const vehicleData = {
-    Porsche: {
+    "Porsche": {
       "Cayenne": {
         "2017": ["Base", "S", "Turbo"]
       }
     },
-    BMW: {
+    "BMW": {
       "3 Series": {
         "2018": ["320i", "330i", "340i"]
       }
     },
-    Honda: {
+    "Honda": {
       "Accord": {
         "2020": ["LX", "EX", "Sport"]
       }
     },
-    Toyota: {
+    "Toyota": {
       "Camry": {
         "2019": ["LE", "SE", "XLE"]
       }
     },
-    Chevrolet: {
+    "Chevrolet": {
       "Malibu": {
         "2020": ["LS", "LT", "Premier"]
       }
     },
-    Ford: {
+    "Ford": {
       "F-150": {
         "2021": ["XL", "XLT", "Lariat"]
       }
@@ -45,10 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   makeSelect.addEventListener("change", function () {
-    modelSelect.innerHTML = "";
-    yearSelect.innerHTML = "";
-    styleSelect.innerHTML = "";
-    Object.keys(vehicleData[this.value]).forEach(model => {
+    modelSelect.innerHTML = "<option value=''>Select Model</option>";
+    yearSelect.innerHTML = "<option value=''>Select Year</option>";
+    styleSelect.innerHTML = "<option value=''>Select Style</option>";
+
+    const models = vehicleData[this.value];
+    if (!models) return;
+
+    Object.keys(models).forEach(model => {
       const opt = document.createElement("option");
       opt.value = model;
       opt.text = model;
@@ -57,10 +62,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   modelSelect.addEventListener("change", function () {
-    yearSelect.innerHTML = "";
-    styleSelect.innerHTML = "";
-    const years = Object.keys(vehicleData[makeSelect.value][this.value]);
-    years.forEach(year => {
+    yearSelect.innerHTML = "<option value=''>Select Year</option>";
+    styleSelect.innerHTML = "<option value=''>Select Style</option>";
+
+    const selectedMake = makeSelect.value;
+    const years = vehicleData[selectedMake][this.value];
+    if (!years) return;
+
+    Object.keys(years).forEach(year => {
       const opt = document.createElement("option");
       opt.value = year;
       opt.text = year;
@@ -69,8 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   yearSelect.addEventListener("change", function () {
-    styleSelect.innerHTML = "";
-    const styles = vehicleData[makeSelect.value][modelSelect.value][this.value];
+    styleSelect.innerHTML = "<option value=''>Select Style</option>";
+
+    const selectedMake = makeSelect.value;
+    const selectedModel = modelSelect.value;
+    const styles = vehicleData[selectedMake][selectedModel][this.value];
+    if (!styles) return;
+
     styles.forEach(style => {
       const opt = document.createElement("option");
       opt.value = style;

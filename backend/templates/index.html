@@ -9,7 +9,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <img src="/static/img/logo.png" alt="Tesla TCO Logo" class="logo" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" alt="Tesla Logo" class="logo" />
       <h1>COST OF OWNERSHIP COMPARISON</h1>
       <p class="subtitle">Compare the 5-Year Cost of Ownership Between Your Car and a Tesla</p>
       <button class="toggle-theme" onclick="toggleTheme()">Toggle Dark Mode</button>
@@ -49,22 +49,6 @@
             <option>FL</option>
           </select>
         </div>
-        <div class="form-group">
-          <label for="fuel_cost">Fuel Cost (5yr):</label>
-          <input type="number" id="fuel_cost" required />
-        </div>
-        <div class="form-group">
-          <label for="maintenance_cost">Maintenance Cost (5yr):</label>
-          <input type="number" id="maintenance_cost" required />
-        </div>
-        <div class="form-group">
-          <label for="insurance_cost">Insurance Cost (5yr):</label>
-          <input type="number" id="insurance_cost" required />
-        </div>
-        <div class="form-group">
-          <label for="total_cost">Total Cost (5yr):</label>
-          <input type="number" id="total_cost" required />
-        </div>
 
         <h2 class="section-title">Your Tesla</h2>
         <div class="form-group">
@@ -88,6 +72,11 @@
 
         <button type="submit" class="submit-btn">COMPARE!</button>
       </form>
+    </div>
+
+    <div id="estimation" class="section" style="display:none;">
+      <h2>Estimated Ownership Costs (5-Year)</h2>
+      <div id="loading">Loading vehicle cost estimates...</div>
     </div>
 
     <div class="chart-section">

@@ -1,36 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tesla TCO Comparison</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/styles.css" id="theme-stylesheet">
 </head>
 <body>
-  <h1>Tesla TCO Comparison</h1>
-  <form id="tco-form">
-    <label for="make">Make:</label>
-    <input type="text" id="make"><br>
-    <label for="model">Model:</label>
-    <input type="text" id="model"><br>
-    <label for="year">Year:</label>
-    <input type="number" id="year"><br>
-    <label for="fuel_cost">Fuel Cost (5yr):</label>
-    <input type="number" id="fuel_cost"><br>
-    <label for="maintenance_cost">Maintenance Cost (5yr):</label>
-    <input type="number" id="maintenance_cost"><br>
-    <label for="insurance_cost">Insurance Cost (5yr):</label>
-    <input type="number" id="insurance_cost"><br>
-    <label for="total_cost">Total Cost (5yr):</label>
-    <input type="number" id="total_cost"><br>
-    <label for="tesla_model">Compare to Tesla Model:</label>
-    <select id="tesla_model">
-      <option value="Model 3">Model 3</option>
-      <option value="Model Y">Model Y</option>
-    </select>
-    <button type="submit">Compare</button>
-  </form>
+  <div class="container">
+    <div class="header">
+      <img src="/static/img/logo.png" alt="Tesla TCO Logo" class="logo" />
+      <h1>COST OF OWNERSHIP COMPARISON</h1>
+      <p class="subtitle">Compare the 5-Year Cost of Ownership Between Your Car and a Tesla</p>
+      <button class="toggle-theme" onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
 
-  <canvas id="comparisonChart"></canvas>
+    <div class="section">
+      <h2>Your Vehicle</h2>
+      <form id="tco-form">
+        <div class="form-group">
+          <label for="make">Make:</label>
+          <select id="make" required></select>
+        </div>
+        <div class="form-group">
+          <label for="model">Model:</label>
+          <select id="model" required></select>
+        </div>
+        <div class="form-group">
+          <label for="year">Year:</label>
+          <select id="year" required></select>
+        </div>
+        <div class="form-group">
+          <label for="style">Style / Trim:</label>
+          <select id="style" required></select>
+        </div>
+        <div class="form-group">
+          <label for="zipcode">ZIP Code:</label>
+          <input type="text" id="zipcode" maxlength="5" required />
+        </div>
+        <div class="form-group">
+          <label for="state">State:</label>
+          <select id="state" required>
+            <option value="">Select State</option>
+            <option>UT</option>
+            <option>CA</option>
+            <option>NY</option>
+            <option>TX</option>
+            <option>FL</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fuel_cost">Fuel Cost (5yr):</label>
+          <input type="number" id="fuel_cost" required />
+        </div>
+        <div class="form-group">
+          <label for="maintenance_cost">Maintenance Cost (5yr):</label>
+          <input type="number" id="maintenance_cost" required />
+        </div>
+        <div class="form-group">
+          <label for="insurance_cost">Insurance Cost (5yr):</label>
+          <input type="number" id="insurance_cost" required />
+        </div>
+        <div class="form-group">
+          <label for="total_cost">Total Cost (5yr):</label>
+          <input type="number" id="total_cost" required />
+        </div>
+
+        <h2 class="section-title">Your Tesla</h2>
+        <div class="form-group">
+          <label for="tesla_model">Tesla Model:</label>
+          <select id="tesla_model" required>
+            <option value="">Select Tesla Model</option>
+            <option value="Model 3">Model 3</option>
+            <option value="Model Y">Model Y</option>
+            <option value="Model S">Model S</option>
+            <option value="Model X">Model X</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tesla_trim">Tesla Trim:</label>
+          <select id="tesla_trim" required>
+            <option value="Standard Range Plus">Standard Range Plus</option>
+            <option value="Long Range">Long Range</option>
+            <option value="Performance">Performance</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">COMPARE!</button>
+      </form>
+    </div>
+
+    <div class="chart-section">
+      <canvas id="comparisonChart"></canvas>
+      <div id="totals"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.carqueryapi.com/js/carquery.0.3.4.js"></script>
   <script src="/static/js/scripts.js"></script>
+  <script>
+    function toggleTheme() {
+      const link = document.getElementById('theme-stylesheet');
+      if (link.getAttribute('href').includes('dark')) {
+        link.setAttribute('href', '/static/css/styles.css');
+      } else {
+        link.setAttribute('href', '/static/css/styles.dark.css');
+      }
+    }
+  </script>
 </body>
 </html>

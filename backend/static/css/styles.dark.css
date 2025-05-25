@@ -1,11 +1,11 @@
 
 :root {
-  --bg-color: #ffffff;
-  --text-color: #111111;
+  --bg-color: #121212;
+  --text-color: #f0f0f0;
   --primary-color: #e82127;
-  --card-bg: #f9f9f9;
-  --input-bg: #ffffff;
-  --border-color: #ccc;
+  --card-bg: #1e1e1e;
+  --input-bg: #2b2b2b;
+  --border-color: #555;
 }
 
 body {
